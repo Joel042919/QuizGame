@@ -65,19 +65,61 @@ const quizQuestions = [
 
 //Variables de estado del quiz
 let indicePreguntaActual = 0;
+let puntaje = 0;
 
 
 startButton.addEventListener('click',iniciarQuiz);
+answersContainer.addEventListener('click',(event)=>{
+    if(event.target.classList.contains("answer-btn")){
+        answersContainer.querySelectorAll(".answer-btn").forEach((btn)=>{
+            btn.disabled = true;
+        })
+        const selectedButton = event.target;
+        const isCorrect = selectedButton.dataset.correct === "true";
+        if(isCorrect){
+            selectedButton.classList.add("correct");
+            puntaje++;
+        }else{
+            selectedButton.classList.add("incorrect");
+        }
+        setTimeout(()=>{
+            indicePreguntaActual++;
+            mostrarPregunta(quizQuestions,indicePreguntaActual);
+            mostrarPuntaje(puntaje);
+        },1000)
+    }
+})
+
+function mostrarPuntaje(puntaje){
+    scoreSpan.textContent = puntaje;
+}
 
 function iniciarQuiz(){
     startScreen.classList.remove('active');
     quizScreen.classList.add('active');
-    mostrarPregunta()
+    mostrarPregunta(quizQuestions,indicePreguntaActual)
+    totalQuestionsSpan.textContent = quizQuestions.length;
 }
 
-function mostrarPregunta(quizQuestions=[]){
-    if(quizQuestions.length === 0) return;
-    
+function mostrarPregunta(quizQuestions=[],indicePreguntaActual=0){
+    if(indicePreguntaActual < quizQuestions.length){
+        const preguntaActual = quizQuestions[indicePreguntaActual]
+        questionText.textContent = preguntaActual.question;
+        currentQuestionSpan.textContent = indicePreguntaActual +1;
+        answersContainer.innerHTML = "";
+        let fragment = document.createDocumentFragment()
+        preguntaActual.answers.forEach((rpta)=>{
+            const button = document.createElement("button");
+            button.textContent = rpta.text;
+            button.classList.add("answer-btn");
+            button.dataset.correct = rpta.correct;
+            fragment.appendChild(button)
+        })
+
+        answersContainer.appendChild(fragment);
+
+    }
+
 }
 
 
