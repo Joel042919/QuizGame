@@ -73,6 +73,7 @@ body{
     flex-direction: column;
     gap: 10px;
     margin-bottom: 25px;
+    border: none;
 }
 
 .answer-btn{
@@ -109,6 +110,11 @@ body{
     border-radius: 5px;
     overflow: hidden;
     margin-top: 20px;
+}
+
+.bloqueado{
+    pointer-events: none;
+    opacity: 0.6;
 }
 
 .progress{

@@ -71,9 +71,7 @@ let puntaje = 0;
 startButton.addEventListener('click',iniciarQuiz);
 answersContainer.addEventListener('click',(event)=>{
     if(event.target.classList.contains("answer-btn")){
-        answersContainer.querySelectorAll(".answer-btn").forEach((btn)=>{
-            btn.disabled = true;
-        })
+        answersContainer.disabled = true;
         const selectedButton = event.target;
         const isCorrect = selectedButton.dataset.correct === "true";
         if(isCorrect){
@@ -85,6 +83,7 @@ answersContainer.addEventListener('click',(event)=>{
         setTimeout(()=>{
             indicePreguntaActual++;
             mostrarPregunta(quizQuestions,indicePreguntaActual);
+            answersContainer.disabled = false;
             mostrarPuntaje(puntaje);
             if(indicePreguntaActual >= quizQuestions.length){
                 mostrarResultados();
