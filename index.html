@@ -10,8 +10,11 @@
     <div class="container">
         <div class="screen active" id="start-screen">
             <h1>TIEMPO DEL QUIZ</h1>
-            <p>Prueba tu conocimiento con esta ronda de preguntas!</p>
-            <button id="start-btn">Empezar Quiz</button>
+            <p>Sube tus preguntas en formato JSON!</p>
+            <form action="" id="formularioUpload">
+                <input type="file" name="preguntasjson" id="preguntasjson" accept=".json">
+                <button id="start-btn">Empezar Quiz</button>
+            </form>
         </div>
         <div class="screen" id="quiz-screen">
             <div class="quiz-header">

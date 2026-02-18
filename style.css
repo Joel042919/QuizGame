@@ -50,6 +50,38 @@ body{
     font-size: 1.1rem
 }
 
+#formularioUpload{
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    align-items: center;
+}
+
+#preguntasjson{
+    cursor: pointer;
+    position: relative;
+    display: inline-block;
+    height: 2em;
+}
+
+/*
+#preguntasjson::before{
+    content: 'Subir Archivo';
+    background-color: #70d1dc;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 2px;
+    position: absolute;
+    width: 100%;
+    height: 2em;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}*/
+
 .quiz-header{
     margin-bottom: 2rem;
 }
@@ -110,11 +142,6 @@ body{
     border-radius: 5px;
     overflow: hidden;
     margin-top: 20px;
-}
-
-.bloqueado{
-    pointer-events: none;
-    opacity: 0.6;
 }
 
 .progress{

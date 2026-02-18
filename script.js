@@ -2,7 +2,7 @@
 const startScreen = document.getElementById("start-screen");
 const quizScreen = document.getElementById("quiz-screen");
 const resultScreen = document.getElementById("result-screen");
-const startButton = document.getElementById("start-btn");
+//const startButton = document.getElementById("start-btn");
 const questionText = document.getElementById("question-text");
 const answersContainer = document.getElementById("answers-container");
 const currentQuestionSpan = document.getElementById("current-question");
@@ -13,8 +13,11 @@ const maxScoreSpan = document.getElementById("max-score");
 const resultMessage = document.getElementById("result-message");
 const restartButton = document.getElementById("restart-btn");
 const progressBar = document.getElementById("progress");
+const formularioUpload = document.getElementById("formularioUpload");
+const inputfile = document.getElementById("preguntasjson");
 
-const quizQuestions = [
+/*
+const quizQuestion = [
   {
     question: "What is the capital of France?",
     answers: [
@@ -60,14 +63,36 @@ const quizQuestions = [
       { text: "Ag", correct: false },
     ],
   },
-];
+];*/
+
+let quizPreguntas = [];
 
 //Variables de estado del quiz
 let indicePreguntaActual = 0;
 let puntaje = 0;
 
 
-startButton.addEventListener('click',iniciarQuiz);
+formularioUpload.addEventListener('submit',(e)=>{
+    e.preventDefault();
+    if(inputfile.files.length ===0){
+        alert('Selecciona un archivo JSON primero');
+        return;
+    }
+
+    const file = inputfile.files[0];
+    const reader = new FileReader();
+    reader.onload = function(e){
+        try {
+            const contenido = e.target.result;
+            quizPreguntas = JSON.parse(contenido);
+            iniciarQuiz()
+        } catch (error) {
+            alert('Error al leer el archivo JSON. Asegúrate de que el formato sea correcto.');
+        }
+    }
+    reader.readAsText(file);
+})
+
 answersContainer.addEventListener('click',(event)=>{
     if(event.target.classList.contains("answer-btn")){
         answersContainer.disabled = true;
@@ -85,15 +110,16 @@ answersContainer.addEventListener('click',(event)=>{
         }
         setTimeout(()=>{
             indicePreguntaActual++;
-            mostrarPregunta(quizQuestions,indicePreguntaActual);
+            mostrarPregunta(quizPreguntas,indicePreguntaActual);
             answersContainer.disabled = false;
             mostrarPuntaje(puntaje);
-            if(indicePreguntaActual >= quizQuestions.length){
+            if(indicePreguntaActual >= quizPreguntas.length){
                 mostrarResultados();
             }
         },1000)
     }
 })
+
 
 restartButton.addEventListener('click',()=>{
     indicePreguntaActual=0;
@@ -109,16 +135,16 @@ function mostrarPuntaje(puntaje){
 function iniciarQuiz(){
     startScreen.classList.remove('active');
     quizScreen.classList.add('active');
-    mostrarPregunta(quizQuestions,indicePreguntaActual)
-    totalQuestionsSpan.textContent = quizQuestions.length;
+    mostrarPregunta(quizPreguntas,indicePreguntaActual)
+    totalQuestionsSpan.textContent = quizPreguntas.length;
 }
 
-function mostrarPregunta(quizQuestions=[],indicePreguntaActual=0){
-    if(indicePreguntaActual < quizQuestions.length){
-        const preguntaActual = quizQuestions[indicePreguntaActual]
+function mostrarPregunta(quizPreguntas=[],indicePreguntaActual=0){
+    if(indicePreguntaActual < quizPreguntas.length){
+        const preguntaActual = quizPreguntas[indicePreguntaActual]
         questionText.textContent = preguntaActual.question;
         currentQuestionSpan.textContent = indicePreguntaActual +1;
-        progressBar.style.width = `${((indicePreguntaActual+1)/quizQuestions.length)*100}%`;
+        progressBar.style.width = `${((indicePreguntaActual+1)/quizPreguntas.length)*100}%`;
 
         answersContainer.innerHTML = "";
         let fragment = document.createDocumentFragment()
@@ -138,11 +164,11 @@ function mostrarResultados(){
     resultScreen.classList.add('active');
     finalScoreSpan.textContent = puntaje;
 
-    if(puntaje===quizQuestions.length){
+    if(puntaje===quizPreguntas.length){
         resultMessage.textContent = "¡Perfecto! ¡Excelente trabajo!";
-    }else if(puntaje >= quizQuestions.length*0.75){
+    }else if(puntaje >= quizPreguntas.length*0.75){
         resultMessage.textContent = "¡Buen trabajo! ¡Sigue practicando!";
-    }else if(puntaje >= quizQuestions.length*0.5){
+    }else if(puntaje >= quizPreguntas.length*0.5){
         resultMessage.textContent = "Sigue practicando, ¡puedes mejorar!";
     }else{
         resultMessage.textContent = "Aun no conoces el tema, ¡sigue estudiando!"
