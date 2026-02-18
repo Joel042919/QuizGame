@@ -86,8 +86,18 @@ answersContainer.addEventListener('click',(event)=>{
             indicePreguntaActual++;
             mostrarPregunta(quizQuestions,indicePreguntaActual);
             mostrarPuntaje(puntaje);
+            if(indicePreguntaActual >= quizQuestions.length){
+                mostrarResultados();
+            }
         },1000)
     }
+})
+
+restartButton.addEventListener('click',()=>{
+    indicePreguntaActual=0;
+    puntaje=0;
+    resultScreen.classList.remove('active');
+    iniciarQuiz();
 })
 
 function mostrarPuntaje(puntaje){
@@ -106,6 +116,8 @@ function mostrarPregunta(quizQuestions=[],indicePreguntaActual=0){
         const preguntaActual = quizQuestions[indicePreguntaActual]
         questionText.textContent = preguntaActual.question;
         currentQuestionSpan.textContent = indicePreguntaActual +1;
+        progressBar.style.width = `${((indicePreguntaActual+1)/quizQuestions.length)*100}%`;
+
         answersContainer.innerHTML = "";
         let fragment = document.createDocumentFragment()
         preguntaActual.answers.forEach((rpta)=>{
@@ -115,117 +127,26 @@ function mostrarPregunta(quizQuestions=[],indicePreguntaActual=0){
             button.dataset.correct = rpta.correct;
             fragment.appendChild(button)
         })
-
         answersContainer.appendChild(fragment);
-
-    }
-
-}
-
-
-/*
-//QUIZ STATE VARS
-let currentQuestionIndex = 0;
-let score = 0;
-let answerDisabled = false;
-
-totalQuestionsSpan.textContent = quizQuestions.length;
-maxScoreSpan.textContent = quizQuestions.length;
-
-//Events listners
-startButton.addEventListener('click',startQuiz);
-restartButton.addEventListener('click',restartQuiz);
-
-function startQuiz(){
-    currentQuestionIndex=0;
-    score=0;
-    scoreSpan.textContent=0;
-    startScreen.classList.remove('active');
-    quizScreen.classList.add('active');
-    showQuestion();
-}
-
-function showQuestion(){
-    answerDisabled=false;
-    const currentQuestion = quizQuestions[currentQuestionIndex];
-
-    currentQuestionSpan.textContent = currentQuestionIndex + 1;
-    const progressPercent = (currentQuestionIndex / quizQuestions.length) *100;
-    progressBar.style.width = `${progressPercent}%`;
-    questionText.textContent = currentQuestion.question;
-
-    answersContainer.innerHTML = "";
-    currentQuestion.answers.forEach((answer)=>{
-        const button = document.createElement("button");
-        button.textContent = answer.text;
-        button.classList.add("answer-btn");
-        // What is dataset? It is a property of the button element that
-        //allows you to store custom data attributes on HTML elements 
-        button.dataset.correct = answer.correct;
-
-        button.addEventListener('click',selectAnswer);
-        answersContainer.appendChild(button);
-    })
-}
-
-
-function selectAnswer(event){
-    if(answerDisabled) return;
-    answerDisabled=true;
-    const selectedButton = event.target;
-    const isCorrect = selectedButton.dataset.correct === "true";
-
-    Array.from(answersContainer.children).forEach(button=>{
-        if(button.dataset.correct === "true"){
-            button.classList.add("correct");
-        }else if(button === selectedButton){
-            button.classList.add("incorrect");
-        }
-    })
-
-    if(isCorrect){
-        score++;
-        scoreSpan.textContent=score;
-
-        setTimeout(()=>{
-            currentQuestionIndex++;
-            if(currentQuestionIndex < quizQuestions.length){
-                showQuestion();
-            }else{
-                showRResults();
-            }
-        },1000)
     }
 }
 
-function showResults(){
+function mostrarResultados(){
     quizScreen.classList.remove('active');
-    resultsScreen.classList.add('active');
-    finalScoreSpan.textContent = score;
+    resultScreen.classList.add('active');
+    finalScoreSpan.textContent = puntaje;
 
-    const percentage = (score / quizQuestions.length) * 100;
-    if(percentage===100){
-        resultMessage.textContent = "Perfect Score! Excellent job!";
-    }else if(percentage >= 75){
-        resultMessage.textContent = "Great work! You did well.";
-    }else if(percentage >= 50){
-        resultMessage.textContent = "Good effort! Keep practicing.";
+    if(puntaje===quizQuestions.length){
+        resultMessage.textContent = "¡Perfecto! ¡Excelente trabajo!";
+    }else if(puntaje >= quizQuestions.length*0.75){
+        resultMessage.textContent = "¡Buen trabajo! ¡Sigue practicando!";
+    }else if(puntaje >= quizQuestions.length*0.5){
+        resultMessage.textContent = "Sigue practicando, ¡puedes mejorar!";
     }else{
-        resultMessage.textContent = "Better luck next time. Don't give up!";
+        resultMessage.textContent = "Aun no conoces el tema, ¡sigue estudiando!"
     }
-    
-}
-
-function restartQuiz(){
-    resultScreen.classList.remove('active');
-    startQuiz();
 }
 
 
-2.700 11.50
-1000 => 11.50
-2700 => x
-x= 11.50*2700/1000
-x= 31.05*/
 
 
