@@ -14,7 +14,6 @@ const resultMessage = document.getElementById("result-message");
 const restartButton = document.getElementById("restart-btn");
 const progressBar = document.getElementById("progress");
 
-
 const quizQuestions = [
   {
     question: "What is the capital of France?",
@@ -79,6 +78,10 @@ answersContainer.addEventListener('click',(event)=>{
             puntaje++;
         }else{
             selectedButton.classList.add("incorrect");
+            const correctButton = answersContainer.querySelector('button[data-correct="true"]');
+            if(correctButton){
+                correctButton.classList.add("correct")
+            }
         }
         setTimeout(()=>{
             indicePreguntaActual++;
