@@ -10,9 +10,13 @@
     <div class="container">
         <div class="screen active" id="start-screen">
             <h1>TIEMPO DEL QUIZ</h1>
-            <p>Sube tus preguntas en formato JSON!</p>
+            <p>Sube tu pdf o tus preguntas en formato JSON!</p>
             <form action="" id="formularioUpload">
-                <input type="file" name="preguntasjson" id="preguntasjson" accept=".json">
+                <input type="file" name="preguntasjson" id="preguntasjson" accept=".json,.pdf">
+                <div class="contexto-container" style="display: none;margin-top: 15px;">
+                    <label for="topic">¿De que tema se haran las preguntas? (Para mejores preguntas sé mas especifico)</label>
+                    <input type="text" name="topic" id="topic" placeholder="Ej: Revolución francesa, react básico..." style="width: 100%; padding: 8px;margin-top: 5px;">
+                </div>
                 <button id="start-btn">Empezar Quiz</button>
             </form>
         </div>

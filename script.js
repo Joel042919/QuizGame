@@ -15,6 +15,8 @@ const restartButton = document.getElementById("restart-btn");
 const progressBar = document.getElementById("progress");
 const formularioUpload = document.getElementById("formularioUpload");
 const inputfile = document.getElementById("preguntasjson");
+const contextoContainer = document.querySelector('.contexto-container')
+const topicInput = document.getElementById('topic')
 
 /*
 const quizQuestion = [
@@ -72,25 +74,65 @@ let indicePreguntaActual = 0;
 let puntaje = 0;
 
 
-formularioUpload.addEventListener('submit',(e)=>{
+formularioUpload.addEventListener('submit',async (e)=>{
     e.preventDefault();
     if(inputfile.files.length ===0){
-        alert('Selecciona un archivo JSON primero');
+        alert('Selecciona un archivo JSON o PDF primero');
         return;
     }
 
     const file = inputfile.files[0];
-    const reader = new FileReader();
-    reader.onload = function(e){
+    if(/\.pdf$/.test(file.name)){
+        const formData = new FormData();
+        formData.append("file",file)
+
+        const topicValue = topicInput.value || "general";
+
         try {
-            const contenido = e.target.result;
-            quizPreguntas = JSON.parse(contenido);
-            iniciarQuiz()
+            let rpta =  await fetch(`http://localhost:8000/generar-quiz?topic=${encodeURIComponent(topicValue)}`,{
+                method:"POST",
+                body: formData
+            })
+            if(rpta.ok){
+               const data = await rpta.json();
+               quizPreguntas = data
+               iniciarQuiz()
+            }
         } catch (error) {
-            alert('Error al leer el archivo JSON. Asegúrate de que el formato sea correcto.');
+            alert("Error en el servidor backend");
+            console.error(error);
+        }
+    }else{
+        const reader = new FileReader();
+        reader.onload = function(e){
+            try {
+               const contenido = e.target.result;
+               quizPreguntas = JSON.parse(contenido);
+               iniciarQuiz()
+            } catch (error) {
+               alert('Error al leer el archivo JSON. Asegúrate de que el formato sea correcto.');
+            }
+        }
+        reader.readAsText(file);
+    }
+    
+})
+
+
+inputfile.addEventListener('change',(e)=>{
+    
+    if(inputfile.files){
+        console.log('dede')
+        const file = inputfile.files[0]
+        if(/\.pdf$/.test(file.name.toLowerCase())){
+            contextoContainer.style.display='block';
+            topicInput.required=true;
+        }else{
+            contextoContainer.style.display='none'
+            topicInput.required=false
+            topicInput.value=''
         }
     }
-    reader.readAsText(file);
 })
 
 answersContainer.addEventListener('click',(event)=>{
